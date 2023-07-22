@@ -32,7 +32,6 @@ let convertImageToArchiveFormat fileName =
     let image =
         Image.NewFromFile($"./images/{fileName}", access = Enums.Access.Sequential)
     // https://www.libvips.org/API/current/VipsForeignSave.html#vips-heifsave
-    // In my tests, above 4 didn't seem to be worth it in terms of bytes reduced.
     image.Heifsave(
         $"./output/netvips/rido-archive-{fileName}.avif",
         effort = 3,

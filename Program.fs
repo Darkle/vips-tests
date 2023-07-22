@@ -10,8 +10,9 @@ let createThumbnail fileName =
         // https://kleisauke.github.io/net-vips/api/NetVips.Enums.Interesting.html
         // https://www.libvips.org/API/current/VipsForeignSave.html#vips-webpsave
         Image
-            .NewFromFile($"./images/{fileName}", access = Enums.Access.Sequential)
-            .ThumbnailImage(width = 100, height = 100, crop = Enums.Interesting.Attention)
+            // .NewFromFile($"./images/{fileName}", access = Enums.Access.Sequential)
+            // Image.Thumbnail performs better: https://github.com/kleisauke/net-vips/issues/97#issuecomment-1646551267
+            .Thumbnail($"./images/{fileName}", width = 100, height = 100, crop = Enums.Interesting.Attention)
             .Webpsave($"./output/netvips/rido-thumb-{fileName}.webp", effort = 3, q = 70)
     }
 
@@ -22,11 +23,14 @@ let convertImageToOptimizedFormat fileName =
         // TODO: this needs to be changed to settings
         // https://www.libvips.org/API/current/VipsForeignSave.html#vips-webpsave
         if image.Width > 1400 then
-            image
-                .ThumbnailImage(width = 1400)
+            // Image.Thumbnail performs better: https://github.com/kleisauke/net-vips/issues/97#issuecomment-1646551267
+            Image
+                .Thumbnail($"./images/{fileName}", width = 1400)
                 .Webpsave($"./output/netvips/rido-optimized-{fileName}.webp", effort = 3, q = 80)
         else
-            image.Webpsave($"./output/netvips/rido-optimized-{fileName}.webp", effort = 3, q = 80)
+            Image
+                .NewFromFile($"./images/{fileName}", access = Enums.Access.Sequential)
+                .Webpsave($"./output/netvips/rido-optimized-{fileName}.webp", effort = 3, q = 80)
     }
 
 let convertImageToArchiveFormat fileName =

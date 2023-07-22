@@ -57,5 +57,5 @@ let main _ =
     convertImageToArchiveFormat "dog.jpg"
     convertImageToArchiveFormat "person.jpg"
 
-    printfn "NetVips Test: %A" sw.Elapsed
+    printfn "NetVips Test Took: %A" sw.Elapsed
     0

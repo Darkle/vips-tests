@@ -1,6 +1,7 @@
 ﻿module VipsTest
 
 open NetVips
+open FluentScheduler
 open System.Threading.Tasks
 
 // https://www.libvips.org/API/current/func-list.html
@@ -107,8 +108,18 @@ let images =
 let main _ =
     let sw = System.Diagnostics.Stopwatch.StartNew()
 
+    let registry = new Registry()
+
+    registry.Schedule(fun _ -> printfn "hello").ToRunEvery(3).Seconds() |> ignore
+
+    JobManager.Initialize(registry)
+
+    JobManager.add_JobException (fun info -> printfn "Job Error: %A" info.Exception)
+
     Parallel.ForEach(
         images,
+        // TODO: change to settings
+        // https://stackoverflow.com/questions/9290498/
         new ParallelOptions(MaxDegreeOfParallelism = 4),
         fun image ->
             createThumbnail image
